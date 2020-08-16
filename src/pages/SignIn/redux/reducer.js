@@ -2,6 +2,9 @@ import { LOGIN } from "./types";
 
 const store = {
   isAuthenticated: false,
+  username: "",
+  token: "",
+  name: ""
 };
 
 export default (state = store, action) => {
@@ -9,7 +12,7 @@ export default (state = store, action) => {
     case LOGIN: {
       return {
         ...state,
-        isAuthenticated: "",
+        ...action.payload,
       };
     }
     default: {

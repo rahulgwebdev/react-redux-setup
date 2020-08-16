@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { signIn } from "./redux/action";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-
+import io from 'socket.io-client';
+import { useState } from "react";
+// import cookies from "js-cookie";
+const socket = io('http://localhost:5000');
 export default () => {
-  const reduxData = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
+  const [formValue, _formValue] = useState({username: "", password: ""});
 
-  const handleSignIn = () => {
-    dispatch(signIn(null));
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    dispatch(signIn(formValue));
   };
 
-  console.log(reduxData);
+  useEffect(() => {
+    socket.on('connect', function(s){
+      console.log("connected")
+    });
+    setTimeout(()=>{
+      // console.log('set cookie')
+      // cookies.set('x-access-token',"asld");
+    },5000)
+  }, [])
+
+  const onChange = (e) => {
+    _formValue({...formValue,[e.target.name]: e.target.value})
+  }
 
   return (
     <div
@@ -26,11 +41,11 @@ export default () => {
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>Username or Email :</label>
-        <input type="email" name="" id="" />
+        <input type="text" name="username" onChange={onChange} value={formValue.username}  />
         <label>Password :</label>
-        <input type="password" name="" id="" />
+        <input type="password" name="password" value={formValue.password} onChange={onChange}   />
         {/* <input type="submit" value="Sign In" /> */}
-        <button onClick={handleSignIn}>Sing In</button>
+        <button onClick={handleSignIn}>Sign In</button>
       </div>
     </div>
   );
